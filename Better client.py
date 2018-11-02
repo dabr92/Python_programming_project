@@ -176,16 +176,16 @@ def register(event=None):
     regpassentry.grid(row=2, column=1, padx=5, pady=1)
     uselabel.grid(row=1, column=0, padx=5)
     passlabel.grid(row=2, column=0, padx=5)
-    reguserentry.bind("<Return>", sendlogin)
-    regpassentry.bind("<Return>", sendlogin)
-    registerbutton.bind("<Return>", sendlogin)
+    reguserentry.bind("<Return>", sendregister)
+    regpassentry.bind("<Return>", sendregister)
+    registerbutton.bind("<Return>", sendregister)
     quitbutton.bind("<Return>", destroyregwindow)
     registerframe.pack()
     reglabel = Label(registerframe)
     reglabel.grid(row=5, column=0, columnspan=2)
 
 
-def sendregister():
+def sendregister(event=None):
     username = reguserentry.get()
     password = regpassentry.get()
     if len(username) < 1 or len(password) < 1:
