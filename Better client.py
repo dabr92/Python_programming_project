@@ -11,7 +11,6 @@ login = Tk()
 login.title("Chat login")
 login.resizable(0, 0)
 
-###CREATE MENUBAR TO RECONNECT AND LOG OUT EZPZ
 
 window.withdraw()
 login.withdraw()

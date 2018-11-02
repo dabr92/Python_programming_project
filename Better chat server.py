@@ -5,14 +5,12 @@ from threading import Thread
 import mysql.connector
 
 userdict = {"Daniel":["Daniel", "123"]}
-print(userdict["Daniel"][1])
 connections = []
 buffer = 1024
 port = 9876
 sockdict = {"emptydicts":"causecrashes"}
 
 servsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#servsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 servsock.bind(("192.168.1.53", port))
 servsock.listen(99)
 
@@ -31,91 +29,6 @@ def sqlconnect():
 
     curs = db.cursor()
 
-'''
-
-def loginprocess(loginsock):
-    conn, addr = loginsock.accept()
-    print("ACCEPTED")
-    try:
-        action = conn.recv(1024).decode()
-        if action == "login":
-            conn.send("login".encode())
-            while True:
-                try:
-                    usename = conn.recv(1024)
-                    if usename:
-                        conn.send("got it".encode())
-                        password = conn.recv(1024)
-                        print(usename.decode(), password.decode())
-                        sql = "select * from person where name='{}' AND password='{}'".format(usename.decode(), password.decode())
-                        curs.execute(sql)
-                        logininfo = (curs.fetchall())
-                        print(len(logininfo))
-                        if len(logininfo) == 1:
-                            print("MATCH")
-                            conn.send("correct".encode())
-                            db.close()
-                            conn.close()
-                            break
-                        else:
-                            conn.send("Username or password is incorrect".encode())
-                            print("NOT IN KEYS")
-                            conn.close()
-                    else:
-                        print("we broke cuz no data")
-                        break
-                except:
-                    print("we excepted")
-                    conn.close()
-                    break
-        elif action == "register":
-            print("register")
-            conn.send("register".encode())
-            while True:
-                try:
-                    regname = conn.recv(1024)
-                    if regname:
-                        conn.send("got it".encode())
-                        regpassword = conn.recv(1024)
-                        print(regname.decode(), regpassword.decode())
-                        sql = "select * from person where name='{}'".format(regname.decode())
-                        curs.execute(sql)
-                        reginfo = curs.fetchall()
-                        print(reginfo)
-                        if len(reginfo) > 0:
-                            conn.send("Username is taken".encode())
-                            conn.close()
-                            break
-                        else:
-                            sqlin = "insert into person set name='{}', password='{}'".format(regname.decode(), regpassword.decode())
-                            curs.execute(sqlin)
-                            db.commit()
-                            db.close()
-                            conn.send("Registration complete".encode())
-                            conn.close()
-                            break
-                except:
-                    conn.close()
-                    break
-        else:
-            print("something fucking weird happened because we should never get here")
-            conn.close()
-    except:
-        print("DIDNT GET DATA")
-        conn.close()
-
-def loginthreader():
-    for luls in range(9999):
-        loginsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        loginsock.bind(("192.168.1.53", 9877))
-        loginsock.listen(99)
-        sqlconnect()
-        loginprocess(loginsock)
-
-
-loginthreaderthread = Thread(target=loginthreader)
-loginthreaderthread.start()
-'''
 
 def broadcast(sock, msg, addr=None, key=None):
     for s in connections:
