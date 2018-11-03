@@ -34,7 +34,10 @@ def broadcast(sock, msg, addr=None, key=None):
     for s in connections:
         if s != sock and s != servsock:
             try:
-                s.send("{}: {}".format(addr, msg).encode())
+                if key == "noyou":
+                    s.send("{} {}".format(addr, msg).encode())
+                else:
+                    s.send("{}: {}".format(addr, msg).encode())
             except:
                 del sockdict[sock]
                 s.close()
