@@ -40,7 +40,7 @@ def receive():
 def connecttoserver():
     global sock
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect(("192.168.1.53", 9876))
+    sock.connect(("172.20.201.74", 9876))
     isconnected.set(1)
 
 
@@ -49,6 +49,7 @@ def reconnect():
         textbox.config(state="normal")
         textbox.insert(END, "\nTRYING TO CONNECT TO SERVER...\n")
         textbox.config(state="disabled")
+        showlast()
         try:
             print(username)
             print(password)
@@ -64,10 +65,12 @@ def reconnect():
             textbox.config(state="disabled")
             receivethread = Thread(target=receive, daemon=True)
             receivethread.start()
+            showlast()
         except:
             textbox.config(state="normal")
             textbox.insert(END, "\nFAILED TO RECONNECT TO SERVER\n")
             textbox.config(state="disabled")
+            showlast()
     else:
          print(sock)
 

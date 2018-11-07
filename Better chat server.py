@@ -8,10 +8,10 @@ userdict = {"Daniel":["Daniel", "123"]}
 connections = []
 buffer = 1024
 port = 9876
-sockdict = {"emptydicts":"causecrashes"}
+sockdict = {None: None}
 
 servsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-servsock.bind(("192.168.1.53", port))
+servsock.bind(("172.20.201.74", port))
 servsock.listen(99)
 
 connections.append(servsock)
@@ -26,8 +26,36 @@ def sqlconnect():
         host="localhost",
         database="logininfo"
     )
-
     curs = db.cursor()
+
+
+def whisper(whispersock, msg, recip):
+    print("noooooo")
+    print("1: {}\n2: {}\n3: {}".format(whispersock, msg, recip))
+    print(sockdict[whispersock])
+    print(sockdict.keys())
+    if sockdict[whispersock] == recip:
+        whispersock.send("You can't whisper yourself\n".encode())
+        return None
+    msg = msg.split()
+    del msg[0:2]
+    msg = " ".join(msg)
+    if len(msg) == 0:
+        return None
+    for s in sockdict.keys():
+        print(s)
+        if sockdict[s] == recip:
+            print("is online")
+            try:
+                s.send("{} Whisper: {}\n".format(sockdict[whispersock], msg).encode())
+                whispersock.send("You whisper {}: {}\n".format(sockdict[s], msg).encode())
+                return None
+            except:
+                print("whisper except")
+        else:
+            continue
+    print("is it here we die?")
+    whispersock.send("No one named {} is online\n".format(recip).encode())
 
 
 def broadcast(sock, msg, addr=None, key=None):
@@ -117,9 +145,15 @@ while True:
             try:
                 data = sock.recv(buffer)
                 if data:
+                    data = data.decode()
                     print("if data")
-                    print(data.decode())
-                    broadcast(sock, data.decode(), sockdict[sock])
+                    print(data)
+                    print((data.split())[0].lower())
+                    if len((data.split())[0].lower()) > 1 and (data.split())[0].lower() == "/w" or (data.split())[0].lower() == "/whisper":
+                        print("whispers")
+                        whisper(sock, data, (data.split())[1])
+                    else:
+                        broadcast(sock, data, sockdict[sock])
                     continue
             except:
                 print("THIS ONE")
